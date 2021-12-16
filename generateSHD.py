@@ -104,9 +104,12 @@ def get_df_ciudad(ciudad, lines):
     mean = df.mean()
     months = process_months(mean).astype(int)
     months["capital_provincia"] = ciudad
-    return months[["capital_provincia", "mes", "salida", "puesta"]].rename(
-        {"salida": "amanecer", "puesta": "anochecer"}, axis=1
-    )
+    months["punto_algido"] = months.apply(
+        lambda row: row["salida"] + (row["puesta"] - row["salida"]) / 2, axis=1
+    ).astype(int)
+    return months[
+        ["capital_provincia", "mes", "salida", "puesta", "punto_algido"]
+    ].rename({"salida": "amanecer", "puesta": "anochecer"}, axis=1)
 
 
 def process_db_df():
