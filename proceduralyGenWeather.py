@@ -1,7 +1,8 @@
-from perlin_noise import PerlinNoise
-from datetime import datetime, timedelta
-from numpy.random import randint
 from json import loads
+from datetime import datetime, timedelta
+
+from perlin_noise import PerlinNoise
+from numpy.random import randint
 from pandas import DataFrame
 from sqlalchemy import create_engine
 
@@ -9,7 +10,16 @@ from sqlalchemy import create_engine
 with open("datagen_config.json", "r", encoding="UTF-8") as f:
     json = loads(f.read())
 
-DB_CONFIG = json["DB_CONFIG"]
+try:
+    with open("db_config.json", "r", encoding="UTF-8") as f:
+        db_config = loads(f.read())
+except FileNotFoundError():
+    print(
+        "[ERROR] No se encontró el archivo de configuración de la base de datos. Asegurate de meterlo en la carpeta"
+    )
+    exit(1)
+
+DB_CONFIG = db_config["DB_CONFIG"]
 COMUNIDADES = json["COMUNIDADES_AUTONOMAS"]
 
 

@@ -3,6 +3,7 @@ from os.path import exists, join
 from os import makedirs, listdir
 from datetime import time
 from re import split
+from sys import exit
 
 from requests import get
 from sqlalchemy import create_engine
@@ -11,10 +12,19 @@ from pandas import DataFrame
 with open("datagen_config.json", "r", encoding="UTF-8") as f:
     json = loads(f.read())
 
+try:
+    with open("db_config.json", "r", encoding="UTF-8") as f:
+        db_config = loads(f.read())
+except FileNotFoundError():
+    print(
+        "[ERROR] No se encontró el archivo de configuración de la base de datos. Asegurate de meterlo en la carpeta"
+    )
+    exit(1)
+
 LISTA_CIUDADES = json["LISTA_CIUDADES"]
 URL_API = json["URL_API"]
 DOWNLOAD_FOLDER = json["DOWNLOAD_FOLDER"]
-DB_CONFIG = json["DB_CONFIG"]
+DB_CONFIG = db_config["DB_CONFIG"]
 
 
 def descargar_datos_txt(ciudad):
