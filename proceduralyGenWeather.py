@@ -44,9 +44,9 @@ def inv_lerp(a, b, v):
     return (v - a) / (b - a)
 
 
-def remap(iMin, iMax, oMin, oMax, v):
-    t = inv_lerp(iMin, iMax, v)
-    return lerp(oMin, oMax, t)
+def remap(i_min, i_max, o_min, o_max, v):
+    t = inv_lerp(i_min, i_max, v)
+    return lerp(o_min, o_max, t)
 
 
 def normalize_timestamp(dt):

@@ -5,7 +5,7 @@ from datetime import time
 from re import split
 from sys import exit
 
-from requests import get
+from requests import get, HTTPError
 from sqlalchemy import create_engine
 from pandas import DataFrame
 
@@ -31,7 +31,7 @@ def descargar_datos_txt(ciudad):
     url = URL_API.format(ciudad=ciudad)
     response = get(url)
     if response.status_code != 200:
-        raise Exception
+        raise HTTPError(response.status_code)
     dest = DOWNLOAD_FOLDER + ciudad + ".txt"
     with open(dest, "w+") as f:
         f.write(response.text)
@@ -47,7 +47,7 @@ def descargar_todas_comunidades():
         try:
             descargar_datos_txt(ciudad)
             print("[INFO] Descargados datos de la ciudad:", ciudad)
-        except Exception as e:
+        except HTTPError:
             print("[ERROR] Error descargando datos de la ciudad:", ciudad)
 
 
