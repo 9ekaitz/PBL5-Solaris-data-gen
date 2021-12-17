@@ -9,22 +9,15 @@ from requests import get, HTTPError
 from sqlalchemy import create_engine
 from pandas import DataFrame
 
+import databaseConnection
+
+
 with open("datagen_config.json", "r", encoding="UTF-8") as f:
     json = loads(f.read())
-
-try:
-    with open("db_config.json", "r", encoding="UTF-8") as f:
-        db_config = loads(f.read())
-except FileNotFoundError():
-    print(
-        "[ERROR] No se encontró el archivo de configuración de la base de datos. Asegurate de meterlo en la carpeta"
-    )
-    exit(1)
 
 LISTA_CIUDADES = json["LISTA_CIUDADES"]
 URL_API = json["URL_API"]
 DOWNLOAD_FOLDER = json["DOWNLOAD_FOLDER"]
-DB_CONFIG = db_config["DB_CONFIG"]
 
 
 def descargar_datos_txt(ciudad):
@@ -49,19 +42,6 @@ def descargar_todas_comunidades():
             print("[INFO] Descargados datos de la ciudad:", ciudad)
         except HTTPError:
             print("[ERROR] Error descargando datos de la ciudad:", ciudad)
-
-
-def get_engine(cfg):
-    driver = cfg["driver"]
-    user = cfg["user"]
-    password = cfg["password"]
-    host = cfg["host"]
-    port = cfg["port"]
-    database = cfg["database"]
-
-    engine_url = f"{driver}://{user}:{password}@{host}:{port}/{database}"
-
-    return create_engine(engine_url)
 
 
 def map_s(datastr):
@@ -128,6 +108,6 @@ def process_db_df():
 if __name__ == "__main__":
     descargar_todas_comunidades()
     db_df = process_db_df()
-    engine = get_engine(DB_CONFIG)
+    engine = databaseConnection.get_engine()
     db_df.to_sql("solar_hours_provincias", engine, if_exists="replace", index=False)
     print("[SUCCESS] Datos subidos a la base de datos")

@@ -6,34 +6,12 @@ from numpy.random import randint
 from pandas import DataFrame
 from sqlalchemy import create_engine
 
+import databaseConnection
 
 with open("datagen_config.json", "r", encoding="UTF-8") as f:
     json = loads(f.read())
 
-try:
-    with open("db_config.json", "r", encoding="UTF-8") as f:
-        db_config = loads(f.read())
-except FileNotFoundError():
-    print(
-        "[ERROR] No se encontró el archivo de configuración de la base de datos. Asegurate de meterlo en la carpeta"
-    )
-    exit(1)
-
-DB_CONFIG = db_config["DB_CONFIG"]
 COMUNIDADES = json["COMUNIDADES_AUTONOMAS"]
-
-
-def get_engine(cfg):
-    driver = cfg["driver"]
-    user = cfg["user"]
-    password = cfg["password"]
-    host = cfg["host"]
-    port = cfg["port"]
-    database = cfg["database"]
-
-    engine_url = f"{driver}://{user}:{password}@{host}:{port}/{database}"
-
-    return create_engine(engine_url)
 
 
 def lerp(a, b, t):
@@ -98,7 +76,7 @@ def main(dt_start, dt_end, nombre_comunidad, offset_comunidad):
     y = [remap(min(y), max(y), 0, 1, i) + offset_comunidad for i in y]
 
     df = generate_db_df(x, y, nombre_comunidad)
-    engine = get_engine(DB_CONFIG)
+    engine = databaseConnection.get_engine()
     df.to_sql("weather_comunidad", engine, if_exists="append", index=False)
 
 
