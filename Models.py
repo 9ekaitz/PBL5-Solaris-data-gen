@@ -13,6 +13,10 @@ class SolarPanelModel(Base):
     price = Column(Numeric, nullable=False)
     width = Column(Numeric, nullable=False)
     height = Column(Numeric, nullable=False)
+    voltage = Column(Numeric, nullable=False)
+
+    def __repr__(self):
+        return f"<SolarPanelModel(id={self.id}, code={self.code}, i18n={self.i18n}, power={self.power}, price={self.price}, width={self.width}, height={self.height}, voltage={self.voltage})>"
 
 
 class SolarPanel(Base):
@@ -21,6 +25,7 @@ class SolarPanel(Base):
     installed_on = Column(DateTime, nullable=False)
     model_id = Column(Integer, ForeignKey("solar_panel_model.id"))
     user_id = Column(Integer, ForeignKey("user.id"))
+    provincia_id = Column(Integer)
 
 
 class User(Base):
@@ -44,3 +49,33 @@ class DataEntry(Base):
     voltage = Column(Numeric, nullable=False)
     current = Column(Numeric, nullable=False)
     solar_panel_id = Column(Integer, ForeignKey("solar_panel.id"))
+
+    def __repr__(self):
+        return f"<DataEntry(id={self.id}, timestamp={self.timestamp}, power={self.power}, voltage={self.voltage}, current={self.current}, solar_panel_id={self.solar_panel_id})>"
+
+
+class SolarHourProvincias(Base):
+    __tablename__ = "solar_hours_provincias"
+    capital_provincia = Column(String, primary_key=True)
+    mes = Column(Integer, primary_key=True)
+    amanecer = Column(Integer)
+    anochecer = Column(Integer)
+    punto_algido = Column(Integer)
+
+    def __repr__(self):
+        return f"<SolarHourProvincias(capital_provincia={self.capital_provincia}, mes={self.mes}, amanecer={self.amanecer}, anochecer={self.anochecer}, punto_algido={self.punto_algido})>"
+
+
+class RelacionComunidadProvincia(Base):
+    __tablename__ = "relacion_comunidad_provincia"
+    id_provincia = Column(Integer, primary_key=True)
+    capital_provincia = Column(String)
+    id_comunidad = Column(Integer)
+
+
+class WeatherComunidad(Base):
+    __tablename__ = "weather_comunidad"
+    id_comunidad = Column(Integer, primary_key=True)
+    timestamp_inicio = Column(DateTime, primary_key=True)
+    timestamp_fin = Column(DateTime)
+    tiempo = Column(Numeric)
