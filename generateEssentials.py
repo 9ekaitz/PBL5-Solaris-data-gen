@@ -4,7 +4,7 @@ from Models import User, SolarPanelModel, SolarPanel, DataEntry, Base
 import databaseConnection
 
 
-def addUsers(session):
+def add_users(session):
     oribe = User(
         name="Oribe",
         email="morobengoa@solaris.net",
@@ -67,7 +67,7 @@ def addUsers(session):
     session.add(ekaitz)
 
 
-def addPanelModels(session):
+def add_panel_models(session):
     model1 = SolarPanelModel(
         code="OG_SOLAR_PANEL_MODEL_1",
         i18n="solar.models.ogSolarPanel1",
@@ -110,7 +110,7 @@ def addPanelModels(session):
     session.add(model4)
 
 
-def addSolarPanels(session):
+def add_solar_panels(session):
     panel1 = SolarPanel(
         installed_on=datetime.now(),
         model_id=1,
@@ -145,9 +145,9 @@ if __name__ == "__main__":
     engine = databaseConnection.get_engine()
     Base.metadata.create_all(engine)
     session = databaseConnection.get_session()
-    addUsers(session)
+    add_users(session)
     session.commit()
-    addPanelModels(session)
+    add_panel_models(session)
     session.commit()
-    addSolarPanels(session)
+    add_solar_panels(session)
     session.commit()
